@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeployTrack — Built by Carlos Moreno</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #111110;
+    --paper: #F7F5F0;
+    --white: #ffffff;
+    --accent: #1A56DB;
+    --accent-light: #EBF0FF;
+    --green: #0A6B3A;
+    --green-light: #DCFCE7;
+    --amber: #9A3C00;
+    --red: #991B1B;
+    --red-light: #FEE2E2;
+    --border: #E2DDD6;
+    --mid: #6B6760;
+    --subtle: #F0EDE8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(247,245,240,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px; font-weight: 500;
+    letter-spacing: 0.5px;
+    color: var(--ink);
+  }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    font-size: 12px; color: var(--mid);
+    text-decoration: none; font-weight: 500;
+    letter-spacing: 0.3px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--ink); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    padding: 120px 48px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; color: var(--mid);
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .hero-eyebrow-line { width: 32px; height: 1px; background: var(--mid); }
+  .hero-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(48px, 5.5vw, 76px);
+    line-height: 1.02;
+    letter-spacing: -1px;
+    margin-bottom: 28px;
+  }
+  .hero-title em { font-style: italic; color: var(--mid); }
+  .hero-body {
+    font-size: 17px; line-height: 1.75;
+    color: var(--mid); font-weight: 300;
+    max-width: 480px; margin-bottom: 48px;
+  }
+  .hero-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 48px; }
+  .hero-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 999px; padding: 6px 14px;
+    font-size: 12px; font-weight: 500; color: var(--ink);
+  }
+  .pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--ink); color: var(--white);
+    padding: 14px 28px; border-radius: 8px;
+    font-size: 14px; font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .hero-cta:hover { background: #333; transform: translateY(-2px); }
+
+  /* DASHBOARD MOCKUP */
+  .hero-visual { position: relative; }
+  .dash {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.04);
+  }
+  .dash-bar {
+    background: #0F1C2D;
+    padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 2px solid var(--accent);
+  }
+  .dash-bar-left { display: flex; align-items: center; gap: 10px; }
+  .dash-bar-title { font-size: 12px; font-weight: 500; color: #fff; }
+  .dash-bar-meta { font-size: 10px; color: rgba(255,255,255,0.4); display: flex; align-items: center; gap: 6px; }
+  .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: blink 2s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .dash-refresh { font-size: 10px; color: rgba(255,255,255,0.5); padding: 3px 8px; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; }
+
+  .dash-stats {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 1px; background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .ds { background: var(--white); padding: 10px 12px; }
+  .ds-label { font-size: 8px; font-family: 'IBM Plex Mono', monospace; color: #999; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 3px; }
+  .ds-val { font-size: 18px; font-weight: 700; line-height: 1; }
+  .c-total { color: #555; }
+  .c-live { color: var(--green); }
+  .c-inprog { color: var(--accent); }
+  .c-blocked { color: var(--red); }
+  .c-done { color: #0A6B3A; }
+
+  .dash-table { font-size: 10px; }
+  .dt-head {
+    display: grid; grid-template-columns: 90px 110px 130px 1fr 1fr;
+    background: #FAFAF8; border-bottom: 1px solid var(--border);
+  }
+  .dt-th { padding: 6px 10px; font-size: 8px; font-family: 'IBM Plex Mono', monospace; color: #999; text-transform: uppercase; letter-spacing: 0.4px; }
+  .dt-row {
+    display: grid; grid-template-columns: 90px 110px 130px 1fr 1fr;
+    border-bottom: 1px solid #F5F3EE; align-items: start;
+    transition: background 0.1s; cursor: default;
+  }
+  .dt-row:hover { background: #F8F7F3; }
+  .dt-row:last-child { border-bottom: none; }
+  .dt-td { padding: 8px 10px; }
+  .dt-site { font-size: 10px; font-weight: 600; }
+  .dt-item { font-size: 10px; font-weight: 600; }
+  .dt-sub { font-size: 8px; color: #aaa; font-family: 'IBM Plex Mono', monospace; margin-top: 1px; }
+  .badge {
+    display: inline-block; font-size: 8px; font-weight: 700;
+    padding: 2px 7px; border-radius: 999px; white-space: nowrap;
+  }
+  .b-live { background: #DCFCE7; color: #15803D; }
+  .b-progress { background: #EBF0FF; color: #1A56DB; }
+  .b-blocked { background: #FEE2E2; color: #991B1B; }
+  .b-pending { background: #FEF3C7; color: #B45309; }
+  .b-done { background: #D1FAE5; color: #065F46; }
+  .dt-dur { font-size: 7px; font-family: 'IBM Plex Mono', monospace; color: #aaa; margin-top: 3px; }
+  .dt-note { font-size: 9px; padding: 4px 7px; border-radius: 0 4px 4px 0; border-left: 2px solid; line-height: 1.4; }
+  .dn-blue { background: #EBF0FF; border-color: var(--accent); color: #1e3a6e; }
+  .dn-green { background: #DCFCE7; border-color: var(--green); color: #064e29; }
+  .dn-meta { font-size: 7px; font-family: 'IBM Plex Mono', monospace; margin-bottom: 2px; }
+
+  .dash-float {
+    position: absolute; right: -32px; bottom: -24px;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+    min-width: 180px;
+  }
+  .df-title { font-size: 10px; font-weight: 600; margin-bottom: 12px; color: var(--ink); }
+  .df-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .df-bar-wrap { flex: 1; height: 4px; background: #eee; border-radius: 999px; overflow: hidden; }
+  .df-bar { height: 100%; border-radius: 999px; }
+  .df-count { font-size: 9px; font-family: 'IBM Plex Mono', monospace; color: var(--mid); min-width: 20px; text-align: right; }
+  .df-label { font-size: 9px; color: var(--mid); min-width: 56px; }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  /* SECTION BASE */
+  .section { padding: 100px 48px; max-width: 1280px; margin: 0 auto; }
+  .s-eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; color: var(--mid);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;
+  }
+  .s-eyebrow::before { content:''; width:24px; height:1px; background:var(--border); }
+  .s-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(32px, 4vw, 52px);
+    line-height: 1.08; letter-spacing: -0.5px; margin-bottom: 18px;
+  }
+  .s-body { font-size: 16px; color: var(--mid); line-height: 1.7; font-weight: 300; max-width: 520px; }
+
+  /* PROBLEM SECTION */
+  .problem-section { background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .problem-inner { padding: 100px 48px; max-width: 1280px; margin: 0 auto; }
+  .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 56px; }
+  .problem-col-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+    color: var(--mid);
+  }
+  .problem-item {
+    display: flex; gap: 14px; align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .problem-icon {
+    width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .problem-text h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .problem-text p { font-size: 12px; color: var(--mid); line-height: 1.6; }
+
+  /* FEATURES */
+  .features-section {
+    background: #0F1C2D;
+    padding: 100px 48px;
+    position: relative; overflow: hidden;
+  }
+  .features-inner { max-width: 1280px; margin: 0 auto; }
+  .features-glow {
+    position: absolute; width: 700px; height: 700px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(26,86,219,0.15) 0%, transparent 70%);
+    right: -200px; top: -200px; pointer-events: none;
+  }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px; overflow: hidden;
+    margin-top: 56px;
+  }
+  .feat {
+    background: #0F1C2D; padding: 36px 32px;
+    transition: background 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .feat:hover { background: rgba(26,86,219,0.08); }
+  .feat-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; color: rgba(255,255,255,0.18);
+    letter-spacing: 1px; margin-bottom: 20px;
+  }
+  .feat-icon { font-size: 24px; margin-bottom: 16px; display: block; }
+  .feat-title { font-family: 'Instrument Serif', serif; font-size: 22px; color: #fff; margin-bottom: 10px; }
+  .feat-body { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.7; font-weight: 300; }
+  .feat-chip {
+    display: inline-block; margin-top: 18px;
+    font-size: 9px; font-family: 'IBM Plex Mono', monospace;
+    padding: 3px 10px; border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.3); letter-spacing: 0.5px;
+  }
+
+  /* USE CASES */
+  .usecases-section { background: var(--paper); }
+  .usecases-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 16px; margin-top: 56px;
+  }
+  .usecase {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 12px; padding: 28px 24px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .usecase:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+  .usecase-emoji { font-size: 28px; margin-bottom: 16px; display: block; }
+  .usecase-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .usecase-body { font-size: 12px; color: var(--mid); line-height: 1.6; }
+  .usecase-examples {
+    margin-top: 12px; display: flex; flex-wrap: wrap; gap: 4px;
+  }
+  .usecase-tag {
+    font-size: 10px; font-family: 'IBM Plex Mono', monospace;
+    padding: 2px 8px; background: var(--subtle); border-radius: 4px;
+    color: var(--mid);
+  }
+
+  /* STACK */
+  .stack-section { background: var(--white); border-top: 1px solid var(--border); }
+  .stack-inner { padding: 100px 48px; max-width: 1280px; margin: 0 auto; }
+  .stack-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 16px; margin-top: 56px;
+  }
+  .stack-card {
+    border: 1px solid var(--border); border-radius: 12px; padding: 32px 24px;
+    text-align: center; transition: transform 0.2s, box-shadow 0.2s;
+    background: var(--white);
+  }
+  .stack-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.07); }
+  .stack-icon { font-size: 28px; margin-bottom: 14px; display: block; }
+  .stack-name { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .stack-role { font-size: 10px; font-family: 'IBM Plex Mono', monospace; color: var(--accent); margin-bottom: 8px; letter-spacing: 0.3px; }
+  .stack-desc { font-size: 11px; color: var(--mid); line-height: 1.6; }
+  .stack-cost {
+    display: inline-block; margin-top: 12px;
+    font-size: 9px; font-family: 'IBM Plex Mono', monospace;
+    padding: 2px 8px; border-radius: 999px;
+    background: var(--green-light); color: var(--green);
+  }
+
+  /* PROCESS */
+  .process-section {
+    background: var(--paper);
+    padding: 100px 48px; border-top: 1px solid var(--border);
+  }
+  .process-inner { max-width: 1280px; margin: 0 auto; }
+  .process-line {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    position: relative; margin-top: 64px;
+  }
+  .process-line::before {
+    content: ''; position: absolute;
+    top: 18px; left: 12%; right: 12%; height: 1px;
+    background: linear-gradient(90deg, var(--border), var(--border));
+    z-index: 0;
+  }
+  .process-step { text-align: center; padding: 0 20px; position: relative; z-index: 1; }
+  .ps-num {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--ink); color: var(--white);
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+  }
+  .ps-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .ps-body { font-size: 12px; color: var(--mid); line-height: 1.6; }
+
+  /* METRICS */
+  .metrics-section {
+    background: var(--ink); padding: 100px 48px;
+  }
+  .metrics-inner { max-width: 1280px; margin: 0 auto; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-top: 56px; }
+  .metric {
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; padding: 40px 32px;
+    text-align: center;
+  }
+  .metric-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 56px; color: var(--white); line-height: 1; margin-bottom: 8px;
+  }
+  .metric-label { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
+  .metric-sub { font-size: 11px; color: rgba(255,255,255,0.25); line-height: 1.5; }
+
+  /* CTA */
+  .cta-section {
+    background: var(--paper); padding: 120px 48px;
+    border-top: 1px solid var(--border); text-align: center;
+  }
+  .cta-inner { max-width: 640px; margin: 0 auto; }
+  .cta-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(36px, 5vw, 60px); line-height: 1.08;
+    letter-spacing: -0.5px; margin-bottom: 20px;
+  }
+  .cta-body { font-size: 16px; color: var(--mid); line-height: 1.7; font-weight: 300; margin-bottom: 40px; }
+  .cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--ink); color: var(--white);
+    padding: 14px 28px; border-radius: 8px;
+    font-size: 14px; font-weight: 500; text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover { background: #333; transform: translateY(-2px); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--white); color: var(--ink);
+    border: 1px solid var(--border);
+    padding: 14px 28px; border-radius: 8px;
+    font-size: 14px; font-weight: 500; text-decoration: none;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--ink); transform: translateY(-2px); }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink); border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 28px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: rgba(255,255,255,0.35); letter-spacing: 0.5px; }
+  .footer-by { font-size: 12px; color: rgba(255,255,255,0.25); }
+
+  /* ANIMATIONS */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  @media (max-width: 1024px) {
+    .hero { grid-template-columns: 1fr; gap: 48px; padding-top: 100px; }
+    .dash-float { display: none; }
+    .problem-grid, .features-grid { grid-template-columns: 1fr 1fr; }
+    .usecases-grid, .stack-grid, .metrics-grid { grid-template-columns: 1fr 1fr; }
+    .process-line { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .process-line::before { display: none; }
+  }
+  @media (max-width: 640px) {
+    nav { padding: 12px 20px; }
+    .nav-links { display: none; }
+    .hero, .section, .problem-inner, .features-section, .stack-inner, .process-section, .metrics-section, .cta-section { padding-left: 20px; padding-right: 20px; }
+    .problem-grid, .features-grid, .usecases-grid, .stack-grid, .metrics-grid, .process-line { grid-template-columns: 1fr; }
+    .dt-th:nth-child(4), .dt-th:nth-child(5), .dt-td:nth-child(4), .dt-td:nth-child(5) { display: none; }
+    .dt-head, .dt-row { grid-template-columns: 80px 100px 120px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">DEPLOYTRACK</div>
+  <div class="nav-links">
+    <a href="#problem">Problem</a>
+    <a href="#features">Features</a>
+    <a href="#stack">Stack</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left reveal">
+    <div class="hero-eyebrow">
+      <span class="hero-eyebrow-line"></span>
+      Deployment Management
+    </div>
+    <h1 class="hero-title">Track anything.<br><em>Deploy everything.</em><br>Miss nothing.</h1>
+    <p class="hero-body">A real-time deployment management platform I built from scratch — giving operations teams a single source of truth across every site, asset, and workstream.</p>
+    <div class="hero-pills">
+      <div class="hero-pill"><div class="pill-dot" style="background:#4ade80"></div>Live sync</div>
+      <div class="hero-pill"><div class="pill-dot" style="background:var(--accent)"></div>Multi-site</div>
+      <div class="hero-pill"><div class="pill-dot" style="background:#f59e0b"></div>Zero cost</div>
+      <div class="hero-pill"><div class="pill-dot" style="background:#a855f7"></div>No-code backend</div>
+    </div>
+    <a href="https://www.linkedin.com/in/carlos-moreno" class="hero-cta" target="_blank">
+      Connect with me →
+    </a>
+  </div>
+
+  <div class="hero-visual reveal reveal-delay-1">
+    <div class="dash">
+      <div class="dash-bar">
+        <div class="dash-bar-left">
+          <div>
+            <div class="dash-bar-title">DeployTrack</div>
+            <div class="dash-bar-meta"><div class="live-dot"></div>Live · 60 deployments active</div>
+          </div>
+        </div>
+        <div class="dash-refresh">↻ Refresh</div>
+      </div>
+      <div class="dash-stats">
+        <div class="ds"><div class="ds-label">Total</div><div class="ds-val c-total">60</div></div>
+        <div class="ds"><div class="ds-label">Active</div><div class="ds-val c-live">18</div></div>
+        <div class="ds"><div class="ds-label">In Progress</div><div class="ds-val c-inprog">22</div></div>
+        <div class="ds"><div class="ds-label">Blocked</div><div class="ds-val c-blocked">4</div></div>
+        <div class="ds"><div class="ds-label">Completed</div><div class="ds-val c-done">12</div></div>
+      </div>
+      <div class="dash-table">
+        <div class="dt-head">
+          <div class="dt-th">Location</div>
+          <div class="dt-th">Asset</div>
+          <div class="dt-th">Status</div>
+          <div class="dt-th">Team Note</div>
+          <div class="dt-th">CS Note</div>
+        </div>
+        <div class="dt-row">
+          <div class="dt-td"><div class="dt-site">Site A</div></div>
+          <div class="dt-td"><div class="dt-item">Unit 14</div><div class="dt-sub">SITE-A-U14</div></div>
+          <div class="dt-td"><span class="badge b-done">Completed</span><div class="dt-dur">Signed off 2d ago</div></div>
+          <div class="dt-td"><div class="dt-note dn-green"><div class="dn-meta">Alex · 3h ago</div>Validation passed, dashboard updated.</div></div>
+          <div class="dt-td"><div class="dt-note dn-blue"><div class="dn-meta">Apr 12 · 2:30 PM</div>Customer confirmed accuracy. Ready for handoff.</div></div>
+        </div>
+        <div class="dt-row">
+          <div class="dt-td"><div class="dt-site">Site B</div></div>
+          <div class="dt-td"><div class="dt-item">Unit 7</div><div class="dt-sub">SITE-B-U7</div></div>
+          <div class="dt-td"><span class="badge b-progress">In Progress</span><div class="dt-dur">6d in calibration</div></div>
+          <div class="dt-td"><span style="font-size:9px;color:#ccc">—</span></div>
+          <div class="dt-td"><div class="dt-note dn-blue"><div class="dn-meta">Apr 10 · 11:00 AM</div>Site will schedule review by end of week.</div></div>
+        </div>
+        <div class="dt-row">
+          <div class="dt-td"><div class="dt-site">Site C</div></div>
+          <div class="dt-td"><div class="dt-item">Unit 3</div><div class="dt-sub">SITE-C-U3</div></div>
+          <div class="dt-td"><span class="badge b-blocked">⚠ Blocked</span><div class="dt-dur" style="color:#991B1B">3d 4h blocked</div></div>
+          <div class="dt-td"><div class="dt-note dn-green"><div class="dn-meta">Jordan · 1d ago</div>Awaiting procurement approval from site manager.</div></div>
+          <div class="dt-td"><span style="font-size:9px;color:#ccc">—</span></div>
+        </div>
+        <div class="dt-row">
+          <div class="dt-td"><div class="dt-site">Site D</div></div>
+          <div class="dt-td"><div class="dt-item">Unit 22</div><div class="dt-sub">SITE-D-U22</div></div>
+          <div class="dt-td"><span class="badge b-pending">Pending Signoff</span></div>
+          <div class="dt-td"><span style="font-size:9px;color:#ccc">—</span></div>
+          <div class="dt-td"><div class="dt-note dn-blue"><div class="dn-meta">Apr 9 · 4:00 PM</div>Tracking looks good. Awaiting final sign-off from ops lead.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-float">
+      <div class="df-title">Progress by stage</div>
+      <div class="df-row">
+        <div class="df-label" style="font-size:9px;color:var(--mid)">Active</div>
+        <div class="df-bar-wrap"><div class="df-bar" style="width:72%;background:#4ade80"></div></div>
+        <div class="df-count">18</div>
+      </div>
+      <div class="df-row">
+        <div class="df-label" style="font-size:9px;color:var(--mid)">In Progress</div>
+        <div class="df-bar-wrap"><div class="df-bar" style="width:58%;background:var(--accent)"></div></div>
+        <div class="df-count">22</div>
+      </div>
+      <div class="df-row">
+        <div class="df-label" style="font-size:9px;color:var(--mid)">Blocked</div>
+        <div class="df-bar-wrap"><div class="df-bar" style="width:18%;background:#f87171"></div></div>
+        <div class="df-count">4</div>
+      </div>
+      <div class="df-row" style="margin-bottom:0">
+        <div class="df-label" style="font-size:9px;color:var(--mid)">Done</div>
+        <div class="df-bar-wrap"><div class="df-bar" style="width:32%;background:#34d399"></div></div>
+        <div class="df-count">12</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PROBLEM -->
+<section class="problem-section" id="problem">
+  <div class="problem-inner">
+    <div class="reveal">
+      <div class="s-eyebrow">The Problem</div>
+      <h2 class="s-title">Deployments fail silently<br>when there's no single source of truth.</h2>
+      <p class="s-body">Operations teams managing multi-site deployments are drowning in emails, spreadsheets, and Slack threads. The information exists — it's just scattered everywhere.</p>
+    </div>
+    <div class="problem-grid">
+      <div class="reveal reveal-delay-1">
+        <div class="problem-col-label">Before — The Old Way</div>
+        <div class="problem-item">
+          <div class="problem-icon" style="background:#FEF3C7">📋</div>
+          <div class="problem-text"><h4>Status lives in spreadsheets</h4><p>Manual updates, stale data, no one sure which version is current. Every status meeting starts with "what's the latest on..."</p></div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-icon" style="background:#FEE2E2">🚧</div>
+          <div class="problem-text"><h4>Blockers go unnoticed</h4><p>A deployment has been stuck for days but nobody flagged it. Leadership finds out weeks later. Escalations happen too late.</p></div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-icon" style="background:#F3E8FF">📨</div>
+          <div class="problem-text"><h4>Context gets lost in email</h4><p>Notes, decisions, and site-specific details buried in inboxes. No institutional memory. New team members start from scratch.</p></div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="problem-col-label">After — DeployTrack</div>
+        <div class="problem-item">
+          <div class="problem-icon" style="background:#DCFCE7">✦</div>
+          <div class="problem-text"><h4>One URL for the whole team</h4><p>Everyone sees the same live data. Status updates propagate instantly. No more "which spreadsheet is current?"</p></div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-icon" style="background:#DCFCE7">🚩</div>
+          <div class="problem-text"><h4>Blockers are impossible to miss</h4><p>Blocked deployments are flagged in the overview, in the table, and in the weekly report — with time in status and reason attached.</p></div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-icon" style="background:#DCFCE7">🗂️</div>
+          <div class="problem-text"><h4>Context is attached to the asset</h4><p>Engineer notes and CS notes live alongside each deployment. Full history, timestamped, searchable. No institutional knowledge lost.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div class="features-glow"></div>
+  <div class="features-inner">
+    <div class="reveal">
+      <div class="s-eyebrow" style="color:rgba(255,255,255,0.3)">What It Does</div>
+      <h2 class="s-title" style="color:#fff">Every feature<br>earned its place.</h2>
+      <p class="s-body" style="color:rgba(255,255,255,0.4)">Nothing was added for its own sake. Each feature came from a real operational pain point.</p>
+    </div>
+    <div class="features-grid reveal">
+      <div class="feat">
+        <div class="feat-num">01</div>
+        <span class="feat-icon">📊</span>
+        <div class="feat-title">Live Status Dashboard</div>
+        <p class="feat-body">Every deployment, every site, every status in one table. Filter by location, status, type, or owner. Sort by any column. Real-time sync.</p>
+        <span class="feat-chip">Real-time · Filterable</span>
+      </div>
+      <div class="feat">
+        <div class="feat-num">02</div>
+        <span class="feat-icon">🗺️</span>
+        <div class="feat-title">Site Overview</div>
+        <p class="feat-body">Card grid per location showing deployment counts by status. Blocked sites flagged prominently. Click any card to drill in instantly.</p>
+        <span class="feat-chip">At-a-glance · Actionable</span>
+      </div>
+      <div class="feat">
+        <div class="feat-num">03</div>
+        <span class="feat-icon">📝</span>
+        <div class="feat-title">Dual Note System</div>
+        <p class="feat-body">Team notes and client-facing notes side by side. Full history per deployment. Auto-prompted on every status change. Nothing falls through the cracks.</p>
+        <span class="feat-chip">Contextual · Timestamped</span>
+      </div>
+      <div class="feat">
+        <div class="feat-num">04</div>
+        <span class="feat-icon">⚡</span>
+        <div class="feat-title">Recent Updates Feed</div>
+        <p class="feat-body">The last 50 touched deployments sorted by recency. Latest notes inline. One click to jump to any record. Perfect for daily standups.</p>
+        <span class="feat-chip">Standup-ready</span>
+      </div>
+      <div class="feat">
+        <div class="feat-num">05</div>
+        <span class="feat-icon">📋</span>
+        <div class="feat-title">Auto Weekly Report</div>
+        <p class="feat-body">A 5-column leadership report that builds itself from live data: in progress, completed, blocked, completion stats, next actions. No manual prep.</p>
+        <span class="feat-chip">Leadership-ready · Auto-generated</span>
+      </div>
+      <div class="feat">
+        <div class="feat-num">06</div>
+        <span class="feat-icon">🔧</span>
+        <div class="feat-title">Smart Infrastructure</div>
+        <p class="feat-body">Optimistic saves. Background refresh only when tab is visible. Keepalive to prevent cold starts. Auto-archives history. Built to run forever without maintenance.</p>
+        <span class="feat-chip">Performant · Self-maintaining</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USE CASES -->
+<section class="section usecases-section" id="usecases">
+  <div class="reveal">
+    <div class="s-eyebrow">Universal by Design</div>
+    <h2 class="s-title">Built for one deployment.<br>Ready for any industry.</h2>
+    <p class="s-body">The architecture is deployment-agnostic. If you have assets to deploy, sites to manage, and a team that needs visibility — this works.</p>
+  </div>
+  <div class="usecases-grid reveal">
+    <div class="usecase">
+      <span class="usecase-emoji">🏭</span>
+      <div class="usecase-title">Industrial / Manufacturing</div>
+      <p class="usecase-body">Track equipment installs, calibrations, and sign-offs across factory floors and production lines.</p>
+      <div class="usecase-examples">
+        <span class="usecase-tag">IoT sensors</span>
+        <span class="usecase-tag">AI cameras</span>
+        <span class="usecase-tag">Equipment</span>
+      </div>
+    </div>
+    <div class="usecase">
+      <span class="usecase-emoji">💻</span>
+      <div class="usecase-title">Tech / SaaS</div>
+      <p class="usecase-body">Manage customer onboardings, integrations, and go-lives across accounts and regions.</p>
+      <div class="usecase-examples">
+        <span class="usecase-tag">Onboarding</span>
+        <span class="usecase-tag">Rollouts</span>
+        <span class="usecase-tag">Migrations</span>
+      </div>
+    </div>
+    <div class="usecase">
+      <span class="usecase-emoji">🏗️</span>
+      <div class="usecase-title">Construction / Facilities</div>
+      <p class="usecase-body">Track installs, inspections, and sign-offs across job sites with team notes attached to each asset.</p>
+      <div class="usecase-examples">
+        <span class="usecase-tag">Installs</span>
+        <span class="usecase-tag">Inspections</span>
+        <span class="usecase-tag">Sign-offs</span>
+      </div>
+    </div>
+    <div class="usecase">
+      <span class="usecase-emoji">🏥</span>
+      <div class="usecase-title">Healthcare / Devices</div>
+      <p class="usecase-body">Manage medical device deployments, validation stages, and compliance sign-offs across facilities.</p>
+      <div class="usecase-examples">
+        <span class="usecase-tag">Validation</span>
+        <span class="usecase-tag">Compliance</span>
+        <span class="usecase-tag">Facilities</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section class="stack-section" id="stack">
+  <div class="stack-inner">
+    <div class="reveal">
+      <div class="s-eyebrow">The Stack</div>
+      <h2 class="s-title">Zero infrastructure cost.<br>100% ownership.</h2>
+      <p class="s-body">Built entirely on free tools. No subscription, no servers, no vendor lock-in. You own the data and the code.</p>
+    </div>
+    <div class="stack-grid reveal">
+      <div class="stack-card">
+        <span class="stack-icon">📄</span>
+        <div class="stack-name">HTML / CSS / JS</div>
+        <div class="stack-role">Frontend</div>
+        <div class="stack-desc">Single file. No frameworks. No build step. Opens in any browser instantly.</div>
+        <div class="stack-cost">Free forever</div>
+      </div>
+      <div class="stack-card">
+        <span class="stack-icon">⚡</span>
+        <div class="stack-name">Google Apps Script</div>
+        <div class="stack-role">Backend API</div>
+        <div class="stack-desc">Serverless backend deployed as a web app. Handles all reads, writes, and history.</div>
+        <div class="stack-cost">Free forever</div>
+      </div>
+      <div class="stack-card">
+        <span class="stack-icon">📊</span>
+        <div class="stack-name">Google Sheets</div>
+        <div class="stack-role">Database</div>
+        <div class="stack-desc">Live structured database. Deployments tab + History tab. Human-readable backup.</div>
+        <div class="stack-cost">Free forever</div>
+      </div>
+      <div class="stack-card">
+        <span class="stack-icon">🚀</span>
+        <div class="stack-name">GitHub Pages</div>
+        <div class="stack-role">Hosting</div>
+        <div class="stack-desc">Free static hosting. One URL for the whole team. No deployment pipeline needed.</div>
+        <div class="stack-cost">Free forever</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section">
+  <div class="process-inner">
+    <div class="reveal">
+      <div class="s-eyebrow">How It Was Built</div>
+      <h2 class="s-title">Weekend project.<br>Production outcome.</h2>
+      <p class="s-body">No dev team, no budget, no runway. Just a problem worth solving and enough persistence to ship something real.</p>
+    </div>
+    <div class="process-line reveal">
+      <div class="process-step">
+        <div class="ps-num">1</div>
+        <div class="ps-title">Define the problem</div>
+        <p class="ps-body">No single view of deployment status. Teams asking the same questions every day. Decided to build instead of complain.</p>
+      </div>
+      <div class="process-step">
+        <div class="ps-num">2</div>
+        <div class="ps-title">Design the data model</div>
+        <p class="ps-body">Google Sheets as the database. Two tabs: deployments and history. Columns mapped to every field the team needed.</p>
+      </div>
+      <div class="process-step">
+        <div class="ps-num">3</div>
+        <div class="ps-title">Build & ship the API</div>
+        <p class="ps-body">Apps Script web app handling GET requests. All reads and writes routed through a single endpoint. Deployed in hours.</p>
+      </div>
+      <div class="process-step">
+        <div class="ps-num">4</div>
+        <div class="ps-title">Iterate with the team</div>
+        <p class="ps-body">Shipped the table first. Added notes, history, site overview, weekly report, and smart refresh over multiple weekends.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METRICS -->
+<section class="metrics-section">
+  <div class="metrics-inner">
+    <div class="reveal">
+      <div class="s-eyebrow" style="color:rgba(255,255,255,0.3)">Impact</div>
+      <h2 class="s-title" style="color:#fff">Real numbers<br>from real use.</h2>
+    </div>
+    <div class="metrics-grid reveal">
+      <div class="metric">
+        <div class="metric-num">60+</div>
+        <div class="metric-label">Deployments tracked</div>
+        <div class="metric-sub">Live across 22 sites with full history</div>
+      </div>
+      <div class="metric">
+        <div class="metric-num">0</div>
+        <div class="metric-label">Manual reports written</div>
+        <div class="metric-sub">Weekly leadership report auto-generates from live data</div>
+      </div>
+      <div class="metric">
+        <div class="metric-num">$0</div>
+        <div class="metric-label">Infrastructure cost</div>
+        <div class="metric-sub">Runs entirely on free tools with no ongoing expenses</div>
+      </div>
+      <div class="metric">
+        <div class="metric-num">1</div>
+        <div class="metric-label">URL for the whole team</div>
+        <div class="metric-sub">Shared with cross-functional teams and leadership</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="cta-inner reveal">
+    <h2 class="cta-title">Let's talk<br>deployment management.</h2>
+    <p class="cta-body">I built this to solve a real problem at work. If your team is managing deployments across multiple sites with scattered tools, I'd love to connect.</p>
+    <div class="cta-actions">
+      <a href="https://www.linkedin.com/in/carlos-moreno" class="btn-primary" target="_blank">Connect on LinkedIn →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">DEPLOYTRACK</div>
+  <div class="footer-by">Built by Carlos Moreno</div>
+</footer>
+
+<script>
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
