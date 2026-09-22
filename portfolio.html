@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DeployTrack — Built by Carlos Moreno</title>
+<title>DeployTrack — A Case Study by Carlos Moreno</title>
+<meta name="description" content="How Carlos Moreno built DeployTrack, a live multi-site deployment tracker, to replace scattered spreadsheets during an AI camera rollout.">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -185,6 +186,28 @@
   .df-bar { height: 100%; border-radius: 999px; }
   .df-count { font-size: 9px; font-family: 'IBM Plex Mono', monospace; color: var(--mid); min-width: 20px; text-align: right; }
   .df-label { font-size: 9px; color: var(--mid); min-width: 56px; }
+
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 20px; font-size: 14px; font-weight: 500;
+    color: var(--ink); text-decoration: none; border-bottom: 1px solid transparent;
+  }
+  .hero-link:hover { border-bottom-color: var(--ink); }
+  .dash-caption {
+    margin-top: 14px; font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; color: var(--mid); letter-spacing: 0.3px;
+  }
+  .case-meta {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--border); padding: 24px 48px 0; gap: 24px;
+    max-width: 1280px; margin: 0 auto;
+  }
+  .cm-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--mid); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .cm-val { font-size: 14px; font-weight: 500; line-height: 1.5; }
+  .decision-num { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--accent); letter-spacing: 1px; margin-bottom: 14px; display: block; }
+  .decision-why { margin-top: 12px; font-size: 12px; line-height: 1.6; color: var(--ink); border-top: 1px solid var(--border); padding-top: 12px; }
+  .decision-why b { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500; color: var(--mid); text-transform: uppercase; letter-spacing: 0.5px; margin-right: 6px; }
 
   /* DIVIDER */
   .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
@@ -415,12 +438,15 @@
     .usecases-grid, .stack-grid, .metrics-grid { grid-template-columns: 1fr 1fr; }
     .process-line { grid-template-columns: 1fr 1fr; gap: 32px; }
     .process-line::before { display: none; }
+    .case-meta { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 640px) {
     nav { padding: 12px 20px; }
     .nav-links { display: none; }
     .hero, .section, .problem-inner, .features-section, .stack-inner, .process-section, .metrics-section, .cta-section { padding-left: 20px; padding-right: 20px; }
-    .problem-grid, .features-grid, .usecases-grid, .stack-grid, .metrics-grid, .process-line { grid-template-columns: 1fr; }
+    .problem-grid, .features-grid, .usecases-grid, .stack-grid, .metrics-grid, .process-line, .case-meta { grid-template-columns: 1fr; }
+    .case-meta { padding-left: 20px; padding-right: 20px; }
+    .hero-title { font-size: 42px; }
     .dt-th:nth-child(4), .dt-th:nth-child(5), .dt-td:nth-child(4), .dt-td:nth-child(5) { display: none; }
     .dt-head, .dt-row { grid-template-columns: 80px 100px 120px; }
   }
@@ -429,11 +455,12 @@
 <body>
 
 <nav>
-  <div class="nav-logo">DEPLOYTRACK</div>
+  <div class="nav-logo">CARLOS MORENO <span style="color:var(--mid)">/ DEPLOYTRACK</span></div>
   <div class="nav-links">
-    <a href="#problem">Problem</a>
-    <a href="#features">Features</a>
-    <a href="#stack">Stack</a>
+    <a href="#problem">Context</a>
+    <a href="#features">What I built</a>
+    <a href="#decisions">Decisions</a>
+    <a href="#impact">Impact</a>
     <a href="#contact">Contact</a>
   </div>
 </nav>
@@ -443,19 +470,20 @@
   <div class="hero-left reveal">
     <div class="hero-eyebrow">
       <span class="hero-eyebrow-line"></span>
-      Deployment Management
+      Case Study · Carlos Moreno
     </div>
-    <h1 class="hero-title">Track anything.<br><em>Deploy everything.</em><br>Miss nothing.</h1>
-    <p class="hero-body">A real-time deployment management platform I built from scratch — giving operations teams a single source of truth across every site, asset, and workstream.</p>
+    <h1 class="hero-title">DeployTrack.<br><em>Built to fix a real</em><br>problem at work.</h1>
+    <p class="hero-body">I inherited a multi-site AI camera rollout where status lived in spreadsheets, inboxes, and Slack threads. Nobody had one current picture. So I built one: a live, shared deployment tracker that engineers, customer success, and leadership used every day.</p>
     <div class="hero-pills">
-      <div class="hero-pill"><div class="pill-dot" style="background:#4ade80"></div>Live sync</div>
-      <div class="hero-pill"><div class="pill-dot" style="background:var(--accent)"></div>Multi-site</div>
-      <div class="hero-pill"><div class="pill-dot" style="background:#f59e0b"></div>Zero cost</div>
-      <div class="hero-pill"><div class="pill-dot" style="background:#a855f7"></div>No-code backend</div>
+      <div class="hero-pill"><div class="pill-dot" style="background:#4ade80"></div>Used in production</div>
+      <div class="hero-pill"><div class="pill-dot" style="background:var(--accent)"></div>22 sites · 60+ deployments</div>
+      <div class="hero-pill"><div class="pill-dot" style="background:#f59e0b"></div>Solo build</div>
+      <div class="hero-pill"><div class="pill-dot" style="background:#a855f7"></div>Built with generative AI</div>
     </div>
-    <a href="https://www.linkedin.com/in/carlosmoreno88/" class="hero-cta" target="_blank">
-      Connect with me →
-    </a>
+    <div class="hero-ctas">
+      <a href="#problem" class="hero-cta">Read the case study ↓</a>
+      <a href="https://www.linkedin.com/in/carlosmoreno88/" class="hero-link" target="_blank">LinkedIn →</a>
+    </div>
   </div>
 
   <div class="hero-visual reveal reveal-delay-1">
@@ -538,8 +566,17 @@
         <div class="df-count">12</div>
       </div>
     </div>
+    <div class="dash-caption">Recreated view · site and team names anonymized</div>
   </div>
 </section>
+
+<div class="case-meta reveal">
+  <div><div class="cm-label">My role</div><div class="cm-val">Problem owner, designer &amp; builder</div></div>
+  <div><div class="cm-label">Team</div><div class="cm-val">Just me, with generative AI as my coding partner</div></div>
+  <div><div class="cm-label">Users</div><div class="cm-val">AI engineers, customer success, leadership</div></div>
+  <div><div class="cm-label">Built with</div><div class="cm-val">JavaScript, Google Apps Script, Google Sheets</div></div>
+</div>
+<div style="height:80px"></div>
 
 <hr class="divider">
 
@@ -547,39 +584,39 @@
 <section class="problem-section" id="problem">
   <div class="problem-inner">
     <div class="reveal">
-      <div class="s-eyebrow">The Problem</div>
-      <h2 class="s-title">Deployments fail silently<br>when there's no single source of truth.</h2>
-      <p class="s-body">Operations teams managing multi-site deployments are drowning in emails, spreadsheets, and Slack threads. The information exists — it's just scattered everywhere.</p>
+      <div class="s-eyebrow">The Context</div>
+      <h2 class="s-title">The information existed.<br>It just lived everywhere.</h2>
+      <p class="s-body">When the rollout was handed to me, every site was at a different stage — different mounting, different camera models, different sampling progress. The data to run it was scattered across emails, spreadsheets, and Slack, and every status meeting started with "what's the latest on…"</p>
     </div>
     <div class="problem-grid">
       <div class="reveal reveal-delay-1">
-        <div class="problem-col-label">Before — The Old Way</div>
+        <div class="problem-col-label">What I walked into</div>
         <div class="problem-item">
           <div class="problem-icon" style="background:#FEF3C7">📋</div>
-          <div class="problem-text"><h4>Status lives in spreadsheets</h4><p>Manual updates, stale data, no one sure which version is current. Every status meeting starts with "what's the latest on..."</p></div>
+          <div class="problem-text"><h4>Status lives in spreadsheets</h4><p>Manual updates and stale data. No one was sure which version was current.</p></div>
         </div>
         <div class="problem-item">
           <div class="problem-icon" style="background:#FEE2E2">🚧</div>
-          <div class="problem-text"><h4>Blockers go unnoticed</h4><p>A deployment has been stuck for days but nobody flagged it. Leadership finds out weeks later. Escalations happen too late.</p></div>
+          <div class="problem-text"><h4>Blockers go unnoticed</h4><p>A deployment could sit stuck for days without anyone flagging it. By the time leadership heard, the escalation was already late.</p></div>
         </div>
         <div class="problem-item">
           <div class="problem-icon" style="background:#F3E8FF">📨</div>
-          <div class="problem-text"><h4>Context gets lost in email</h4><p>Notes, decisions, and site-specific details buried in inboxes. No institutional memory. New team members start from scratch.</p></div>
+          <div class="problem-text"><h4>Context gets lost in email</h4><p>Notes, decisions, and site-specific details were buried in inboxes. Anyone new to the account had to start from scratch.</p></div>
         </div>
       </div>
       <div class="reveal reveal-delay-2">
-        <div class="problem-col-label">After — DeployTrack</div>
+        <div class="problem-col-label">What changed after I shipped DeployTrack</div>
         <div class="problem-item">
           <div class="problem-icon" style="background:#DCFCE7">✦</div>
-          <div class="problem-text"><h4>One URL for the whole team</h4><p>Everyone sees the same live data. Status updates propagate instantly. No more "which spreadsheet is current?"</p></div>
+          <div class="problem-text"><h4>One link for the whole team</h4><p>Everyone saw the same live data. Updates reached the whole team right away, with no more asking which spreadsheet was current.</p></div>
         </div>
         <div class="problem-item">
           <div class="problem-icon" style="background:#DCFCE7">🚩</div>
-          <div class="problem-text"><h4>Blockers are impossible to miss</h4><p>Blocked deployments are flagged in the overview, in the table, and in the weekly report — with time in status and reason attached.</p></div>
+          <div class="problem-text"><h4>Blockers became hard to miss</h4><p>Blocked deployments were flagged in the overview, the table, and the weekly report, showing how long they had been stuck and why.</p></div>
         </div>
         <div class="problem-item">
           <div class="problem-icon" style="background:#DCFCE7">🗂️</div>
-          <div class="problem-text"><h4>Context is attached to the asset</h4><p>Engineer notes and CS notes live alongside each deployment. Full history, timestamped, searchable. No institutional knowledge lost.</p></div>
+          <div class="problem-text"><h4>Context stayed with the asset</h4><p>Engineer notes and customer success notes lived alongside each deployment, with a full timestamped history.</p></div>
         </div>
       </div>
     </div>
@@ -591,104 +628,88 @@
   <div class="features-glow"></div>
   <div class="features-inner">
     <div class="reveal">
-      <div class="s-eyebrow" style="color:rgba(255,255,255,0.3)">What It Does</div>
-      <h2 class="s-title" style="color:#fff">Every feature<br>earned its place.</h2>
-      <p class="s-body" style="color:rgba(255,255,255,0.4)">Nothing was added for its own sake. Each feature came from a real operational pain point.</p>
+      <div class="s-eyebrow" style="color:rgba(255,255,255,0.3)">What I Built</div>
+      <h2 class="s-title" style="color:#fff">Every feature came<br>from a real request.</h2>
+      <p class="s-body" style="color:rgba(255,255,255,0.4)">I shipped the table first, then added each feature when the team hit a specific pain point in standups, customer calls, or leadership reviews.</p>
     </div>
     <div class="features-grid reveal">
       <div class="feat">
         <div class="feat-num">01</div>
         <span class="feat-icon">📊</span>
         <div class="feat-title">Live Status Dashboard</div>
-        <p class="feat-body">Every deployment, every site, every status in one table. Filter by location, status, type, or owner. Sort by any column. Real-time sync.</p>
-        <span class="feat-chip">Real-time · Filterable</span>
+        <p class="feat-body">Every deployment, site, and status in one table, filterable by location, status, type, or owner. This replaced the spreadsheets.</p>
+        <span class="feat-chip">Solved: "which version is current?"</span>
       </div>
       <div class="feat">
         <div class="feat-num">02</div>
         <span class="feat-icon">🗺️</span>
         <div class="feat-title">Site Overview</div>
         <p class="feat-body">Card grid per location showing deployment counts by status. Blocked sites flagged prominently. Click any card to drill in instantly.</p>
-        <span class="feat-chip">At-a-glance · Actionable</span>
+        <span class="feat-chip">Solved: site-by-site status calls</span>
       </div>
       <div class="feat">
         <div class="feat-num">03</div>
         <span class="feat-icon">📝</span>
         <div class="feat-title">Dual Note System</div>
-        <p class="feat-body">Team notes and client-facing notes side by side. Full history per deployment. Auto-prompted on every status change. Nothing falls through the cracks.</p>
-        <span class="feat-chip">Contextual · Timestamped</span>
+        <p class="feat-body">Engineer notes and customer-facing notes side by side, with full history per deployment. A note is prompted on every status change.</p>
+        <span class="feat-chip">Solved: context lost in email</span>
       </div>
       <div class="feat">
         <div class="feat-num">04</div>
         <span class="feat-icon">⚡</span>
         <div class="feat-title">Recent Updates Feed</div>
-        <p class="feat-body">The last 50 touched deployments sorted by recency. Latest notes inline. One click to jump to any record. Perfect for daily standups.</p>
-        <span class="feat-chip">Standup-ready</span>
+        <p class="feat-body">The 50 most recently updated deployments with their latest notes inline, one click from the full record. Built for our daily syncs.</p>
+        <span class="feat-chip">Solved: slow daily standups</span>
       </div>
       <div class="feat">
         <div class="feat-num">05</div>
         <span class="feat-icon">📋</span>
         <div class="feat-title">Auto Weekly Report</div>
-        <p class="feat-body">A 5-column leadership report that builds itself from live data: in progress, completed, blocked, completion stats, next actions. No manual prep.</p>
-        <span class="feat-chip">Leadership-ready · Auto-generated</span>
+        <p class="feat-body">A leadership report that builds itself from live data: in progress, completed, blocked, completion stats, and next actions.</p>
+        <span class="feat-chip">Solved: manual weekly report prep</span>
       </div>
       <div class="feat">
         <div class="feat-num">06</div>
         <span class="feat-icon">🔧</span>
-        <div class="feat-title">Smart Infrastructure</div>
-        <p class="feat-body">Optimistic saves. Background refresh only when tab is visible. Keepalive to prevent cold starts. Auto-archives history. Built to run forever without maintenance.</p>
-        <span class="feat-chip">Performant · Self-maintaining</span>
+        <div class="feat-title">Reliability Tuning</div>
+        <p class="feat-body">Instant saves, refresh only when the tab is visible, and automatic history archiving, so it stayed fast and needed no upkeep as usage grew.</p>
+        <span class="feat-chip">Solved: slowdowns under real use</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- USE CASES -->
-<section class="section usecases-section" id="usecases">
+<!-- DECISIONS -->
+<section class="section usecases-section" id="decisions">
   <div class="reveal">
-    <div class="s-eyebrow">Universal by Design</div>
-    <h2 class="s-title">Built for one deployment.<br>Ready for any industry.</h2>
-    <p class="s-body">The architecture is deployment-agnostic. If you have assets to deploy, sites to manage, and a team that needs visibility — this works.</p>
+    <div class="s-eyebrow">Key Decisions</div>
+    <h2 class="s-title">The choices behind it,<br>and why I made them.</h2>
+    <p class="s-body">I had no dev team, no budget, and no time for a procurement cycle. Those constraints shaped every design choice.</p>
   </div>
   <div class="usecases-grid reveal">
     <div class="usecase">
-      <span class="usecase-emoji">🏭</span>
-      <div class="usecase-title">Industrial / Manufacturing</div>
-      <p class="usecase-body">Track equipment installs, calibrations, and sign-offs across factory floors and production lines.</p>
-      <div class="usecase-examples">
-        <span class="usecase-tag">IoT sensors</span>
-        <span class="usecase-tag">AI cameras</span>
-        <span class="usecase-tag">Equipment</span>
-      </div>
+      <span class="decision-num">01</span>
+      <div class="usecase-title">Google Sheets as the database</div>
+      <p class="usecase-body">The team already worked in Sheets, so the data stayed readable and editable even outside the app.</p>
+      <div class="decision-why"><b>Trade-off</b>Not built for huge scale, but right for dozens of sites, and it needed no approvals to start.</div>
     </div>
     <div class="usecase">
-      <span class="usecase-emoji">💻</span>
-      <div class="usecase-title">Tech / SaaS</div>
-      <p class="usecase-body">Manage customer onboardings, integrations, and go-lives across accounts and regions.</p>
-      <div class="usecase-examples">
-        <span class="usecase-tag">Onboarding</span>
-        <span class="usecase-tag">Rollouts</span>
-        <span class="usecase-tag">Migrations</span>
-      </div>
+      <span class="decision-num">02</span>
+      <div class="usecase-title">One HTML file, no framework</div>
+      <p class="usecase-body">No build step or dependencies. Anyone could host it, open it, or pick it up after me.</p>
+      <div class="decision-why"><b>Why</b>A tool only lasts if someone other than its builder can maintain it.</div>
     </div>
     <div class="usecase">
-      <span class="usecase-emoji">🏗️</span>
-      <div class="usecase-title">Construction / Facilities</div>
-      <p class="usecase-body">Track installs, inspections, and sign-offs across job sites with team notes attached to each asset.</p>
-      <div class="usecase-examples">
-        <span class="usecase-tag">Installs</span>
-        <span class="usecase-tag">Inspections</span>
-        <span class="usecase-tag">Sign-offs</span>
-      </div>
+      <span class="decision-num">03</span>
+      <div class="usecase-title">Two separate note streams</div>
+      <p class="usecase-body">Engineers and customer success needed to say different things to different audiences about the same deployment.</p>
+      <div class="decision-why"><b>Why</b>Customer updates stayed clean, and technical detail wasn't lost.</div>
     </div>
     <div class="usecase">
-      <span class="usecase-emoji">🏥</span>
-      <div class="usecase-title">Healthcare / Devices</div>
-      <p class="usecase-body">Manage medical device deployments, validation stages, and compliance sign-offs across facilities.</p>
-      <div class="usecase-examples">
-        <span class="usecase-tag">Validation</span>
-        <span class="usecase-tag">Compliance</span>
-        <span class="usecase-tag">Facilities</span>
-      </div>
+      <span class="decision-num">04</span>
+      <div class="usecase-title">A read-only view for stakeholders</div>
+      <p class="usecase-body">Leadership and wider teams got the same live views (overview, recent updates, weekly report) without edit access.</p>
+      <div class="decision-why"><b>Why</b>More visibility, without risking accidental changes to the source of truth.</div>
     </div>
   </div>
 </section>
@@ -698,37 +719,37 @@
   <div class="stack-inner">
     <div class="reveal">
       <div class="s-eyebrow">The Stack</div>
-      <h2 class="s-title">Zero infrastructure cost.<br>100% ownership.</h2>
-      <p class="s-body">Built entirely on free tools. No subscription, no servers, no vendor lock-in. You own the data and the code.</p>
+      <h2 class="s-title">Built on tools<br>the team already had.</h2>
+      <p class="s-body">I chose free, familiar tools on purpose: nothing to buy, nothing to get approved, and no servers to maintain.</p>
     </div>
     <div class="stack-grid reveal">
       <div class="stack-card">
         <span class="stack-icon">📄</span>
         <div class="stack-name">HTML / CSS / JS</div>
         <div class="stack-role">Frontend</div>
-        <div class="stack-desc">Single file. No frameworks. No build step. Opens in any browser instantly.</div>
-        <div class="stack-cost">Free forever</div>
+        <div class="stack-desc">A single file with no frameworks or build step. Opens in any browser.</div>
+        <div class="stack-cost">$0</div>
       </div>
       <div class="stack-card">
         <span class="stack-icon">⚡</span>
         <div class="stack-name">Google Apps Script</div>
         <div class="stack-role">Backend API</div>
         <div class="stack-desc">Serverless backend deployed as a web app. Handles all reads, writes, and history.</div>
-        <div class="stack-cost">Free forever</div>
+        <div class="stack-cost">$0</div>
       </div>
       <div class="stack-card">
         <span class="stack-icon">📊</span>
         <div class="stack-name">Google Sheets</div>
         <div class="stack-role">Database</div>
         <div class="stack-desc">Live structured database. Deployments tab + History tab. Human-readable backup.</div>
-        <div class="stack-cost">Free forever</div>
+        <div class="stack-cost">$0</div>
       </div>
       <div class="stack-card">
         <span class="stack-icon">🚀</span>
         <div class="stack-name">GitHub Pages</div>
         <div class="stack-role">Hosting</div>
-        <div class="stack-desc">Free static hosting. One URL for the whole team. No deployment pipeline needed.</div>
-        <div class="stack-cost">Free forever</div>
+        <div class="stack-desc">Static hosting that gave the whole team one link to bookmark.</div>
+        <div class="stack-cost">$0</div>
       </div>
     </div>
   </div>
@@ -738,15 +759,15 @@
 <section class="process-section">
   <div class="process-inner">
     <div class="reveal">
-      <div class="s-eyebrow">How It Was Built</div>
+      <div class="s-eyebrow">How I Built It</div>
       <h2 class="s-title">Weekend project.<br>Production outcome.</h2>
-      <p class="s-body">No dev team, no budget, no runway. Just a problem worth solving and enough persistence to ship something real.</p>
+      <p class="s-body">I used generative AI as my coding partner. I owned the rest: defining the problem, designing the data model, deciding what to build next, testing with the team, and rolling it out.</p>
     </div>
     <div class="process-line reveal">
       <div class="process-step">
         <div class="ps-num">1</div>
         <div class="ps-title">Define the problem</div>
-        <p class="ps-body">No single view of deployment status. Teams asking the same questions every day. Decided to build instead of complain.</p>
+        <p class="ps-body">No single view of deployment status, and the team asking the same questions every day. I decided to build the fix instead of adding another spreadsheet.</p>
       </div>
       <div class="process-step">
         <div class="ps-num">2</div>
@@ -768,11 +789,11 @@
 </section>
 
 <!-- METRICS -->
-<section class="metrics-section">
+<section class="metrics-section" id="impact">
   <div class="metrics-inner">
     <div class="reveal">
       <div class="s-eyebrow" style="color:rgba(255,255,255,0.3)">Impact</div>
-      <h2 class="s-title" style="color:#fff">Real numbers<br>from real use.</h2>
+      <h2 class="s-title" style="color:#fff">What it changed.</h2>
     </div>
     <div class="metrics-grid reveal">
       <div class="metric">
@@ -802,17 +823,18 @@
 <!-- CTA -->
 <section class="cta-section" id="contact">
   <div class="cta-inner reveal">
-    <h2 class="cta-title">Let's talk<br>deployment management.</h2>
-    <p class="cta-body">I built this to solve a real problem at work. If your team is managing deployments across multiple sites with scattered tools, I'd love to connect.</p>
+    <h2 class="cta-title">Thanks for reading.</h2>
+    <p class="cta-body">DeployTrack is one example of how I work: find where a team is losing time, build the fix, and make sure people actually use it. I'm happy to walk through a live demo or talk about the project in more detail.</p>
     <div class="cta-actions">
       <a href="https://www.linkedin.com/in/carlosmoreno88/" class="btn-primary" target="_blank">Connect on LinkedIn →</a>
+      <a href="#" class="btn-secondary" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Back to top ↑</a>
     </div>
   </div>
 </section>
 
 <footer>
-  <div class="footer-logo">DEPLOYTRACK</div>
-  <div class="footer-by">Built by Carlos Moreno</div>
+  <div class="footer-logo">DEPLOYTRACK · A CASE STUDY</div>
+  <div class="footer-by">Designed and built by Carlos Moreno</div>
 </footer>
 
 <script>
